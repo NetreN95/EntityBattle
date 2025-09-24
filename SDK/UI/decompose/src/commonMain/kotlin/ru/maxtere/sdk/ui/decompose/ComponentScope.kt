@@ -1,0 +1,12 @@
+package ru.maxtere.sdk.ui.decompose
+
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+
+val ComponentContext.componentScope: CoroutineScope
+    get() = CoroutineScope(SupervisorJob()).apply {
+        lifecycle.doOnDestroy { cancel() }
+    }
