@@ -65,7 +65,7 @@ fun EntityMenu(
     buttonByEntity: ButtonByEntity?,
     modifier: Modifier
 ) {
-    if (buttonByEntity == null){
+    if (buttonByEntity == null) {
         return
     }
 

@@ -56,7 +56,7 @@ fun GameTurn.currentButton(entity: Entity): ButtonByEntity? {
                 )
             } else {
                 ButtonByEntity(
-                    onclick = {this.onAttack(entity = entity)},
+                    onclick = { this.onAttack(entity = entity) },
                     text = "Атаковать",
                     enabled = currentEntity?.canAttack(entity = entity) == true,
                     color = Color.Red
