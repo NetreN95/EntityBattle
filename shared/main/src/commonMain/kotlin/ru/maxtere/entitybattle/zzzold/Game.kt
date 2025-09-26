@@ -1,8 +1,17 @@
 //package ru.maxtere.entitybattle.game
 //
+//import kotlinx.coroutines.flow.MutableStateFlow
+//import kotlinx.coroutines.flow.asStateFlow
+//import ru.maxtere.entitybattle.entities.entity.Entity
 //
 //class Game {
-//
+//    private val _state: MutableStateFlow<GameState> = MutableStateFlow(
+//        GameState.newGame(
+//            gameOver = ::gameOver,
+//            update = ::update
+//        )
+//    )
+//    val state = _state.asStateFlow()
 //
 //    fun menu() {
 //        updateState {

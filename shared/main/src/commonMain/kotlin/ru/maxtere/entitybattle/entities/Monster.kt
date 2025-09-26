@@ -1,20 +1,17 @@
 package ru.maxtere.entitybattle.entities
 
 import ru.maxtere.entitybattle.entities.entity.Entity
-import ru.maxtere.entitybattle.entities.entity.EntityAttributes
 
-class Monster(
-    attributes: EntityAttributes = EntityAttributes.DEFAULT
+data class Monster(
+    override val healthPoints: Int,
+    override val defensePoints: Int,
+    override val attackPoints: Int,
+    override val minDamagePoints: Int,
+    override val maxDamagePoints: Int
 ) : Entity(
-    attributes = attributes
-) {
-    fun chooseEntityToAttack(entities: List<Entity>): Entity? {
-        if (!isAlive) {
-            return null
-        }
-        val list = entities.filter { entity ->
-            canAttack(entity)
-        }
-        return list.randomOrNull()
-    }
-}
+    healthPoints = healthPoints,
+    defensePoints = defensePoints,
+    attackPoints = attackPoints,
+    minDamagePoints = minDamagePoints,
+    maxDamagePoints = maxDamagePoints,
+)
