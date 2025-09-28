@@ -3,7 +3,6 @@ package ru.maxtere.entitybattle.components.root
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
 import kotlinx.serialization.Serializable
 import ru.maxtere.entitybattle.components.root.RootComponent.Child.Game
 import ru.maxtere.entitybattle.components.root.RootComponent.Child.GameOver
@@ -31,7 +30,7 @@ class RootComponent(
         is Config.GameOver -> GameOver()
     }
 
-    private fun clickOnBack() = navigation.pop()
+//    private fun clickOnBack() = navigation.pop()
 
     @Serializable
     sealed interface Config {

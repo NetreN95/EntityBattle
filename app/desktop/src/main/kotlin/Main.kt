@@ -1,21 +1,27 @@
-import ru.maxtere.entitybattle.entities.entity.Monster
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.application
+import ru.maxtere.entitybattle.entities.entity.Entity.Monster
 
 fun main() {
-    test()
+//    test()
+
 //    initKoin()
 //
-//    application {
-//        Window(
-//            title = "Entity battle",
-//            onCloseRequest = ::exitApplication,
-//            state = WindowState(
-//                size = DpSize(400.dp, 800.dp)
-//            ),
-//            resizable = false
-//        ) {
-//            App()
-//        }
-//    }
+    application {
+        Window(
+            title = "Entity battle",
+            onCloseRequest = ::exitApplication,
+            state = WindowState(
+                size = DpSize(400.dp, 800.dp)
+            ),
+            resizable = false
+        ) {
+            App()
+        }
+    }
 }
 
 fun test() {
@@ -37,7 +43,7 @@ fun test() {
 
     println("entity2.healthPoints = ${entity2.healthPoints}")
     println("entity2.maxHealth = ${entity2.maxHealth}")
-    entity1.attack(entity2)
+    entity1.tryAttack(entity2)
     println("entity2.healthPoints = ${entity2.healthPoints}")
     println("entity2.maxHealth = ${entity2.maxHealth}")
 }

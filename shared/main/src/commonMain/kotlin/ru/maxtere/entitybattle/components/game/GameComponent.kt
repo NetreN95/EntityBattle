@@ -8,7 +8,6 @@ class GameComponent(
 ) : ComponentContext by context {
 
 
-
     data class State(
         val entities: List<Entity>,
         val currentEntityIndex: Int
