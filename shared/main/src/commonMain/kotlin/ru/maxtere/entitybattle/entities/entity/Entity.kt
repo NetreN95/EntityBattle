@@ -12,15 +12,10 @@ sealed class Entity(
     open val attackPoints: Int,
     open val minDamagePoints: Int,
     open val maxDamagePoints: Int,
-    val maxHealth: Int = healthPoints
+    open val maxHealth: Int = healthPoints
 ) {
     val isAlive
         get() = (healthPoints > 0)
-
-//    private val _id: Int = IntRange(
-//        Int.MIN_VALUE,
-//        Int.MAX_VALUE
-//    ).random()
 
     fun tryAttack(entity: Entity): Int {
         println("if (canAttackWithMod(entity = entity))")
@@ -74,22 +69,46 @@ sealed class Entity(
         println("healthPoints = $healthPoints")
     }
 
-//    override fun hashCode(): Int = _id
-//    override fun equals(other: Any?): Boolean {
-//        println("equals")
-//
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        return true
-//    }
+    fun abstractCopy(
+        healthPoints: Int = this.healthPoints,
+        defensePoints: Int = this.defensePoints,
+        attackPoints: Int = this.attackPoints,
+        minDamagePoints: Int = this.minDamagePoints,
+        maxDamagePoints: Int = this.maxDamagePoints,
+    ): Entity {
+
+        when (this) {
+            is Player -> {
+                return this.copy(
+                    healthPoints = healthPoints,
+                    defensePoints = defensePoints,
+                    attackPoints = attackPoints,
+                    minDamagePoints = minDamagePoints,
+                    maxDamagePoints = maxDamagePoints
+                )
+            }
+
+            is Monster -> {
+                return this.copy(
+                    healthPoints = healthPoints,
+                    defensePoints = defensePoints,
+                    attackPoints = attackPoints,
+                    minDamagePoints = minDamagePoints,
+                    maxDamagePoints = maxDamagePoints
+                )
+            }
+        }
+
+
+    }
 
     data class Player(
         override var healthPoints: Int = 100,
         override val defensePoints: Int = 30,
         override val attackPoints: Int = 30,
         override val minDamagePoints: Int = 1,
-        override val maxDamagePoints: Int = 20
+        override val maxDamagePoints: Int = 20,
+        override val maxHealth: Int = healthPoints
     ) : Entity(
         healthPoints = healthPoints,
         defensePoints = defensePoints,
@@ -126,7 +145,8 @@ sealed class Entity(
         override val defensePoints: Int = 30,
         override val attackPoints: Int = 30,
         override val minDamagePoints: Int = 1,
-        override val maxDamagePoints: Int = 20
+        override val maxDamagePoints: Int = 20,
+        override val maxHealth: Int = healthPoints
     ) : Entity(
         healthPoints = healthPoints,
         defensePoints = defensePoints,

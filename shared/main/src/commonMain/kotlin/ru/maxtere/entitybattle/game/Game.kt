@@ -74,7 +74,7 @@ object Game {
 //    val entities: StateFlow<List<Entity>> = _entities.asStateFlow()
 
 
-//    val aliveEntities get() = entities.value.filter { entity -> entity.isAlive }
+    //    val aliveEntities get() = entities.value.filter { entity -> entity.isAlive }
     val aliveEntities get() = state.value.entities.filter { entity -> entity.isAlive }
 
     val currentEntity
@@ -94,7 +94,39 @@ object Game {
     }
 
     fun onAttack(entity: Entity) {
-        currentEntity?.tryAttack(entity = entity)
+//        currentEntity?.tryAttack(entity = entity)
+
+        val damageRange = IntRange(
+            start = entity.minDamagePoints,
+            endInclusive = entity.maxDamagePoints
+        )
+
+        println("damageRange = $damageRange")
+        val damage = damageRange.random()
+        println("damage = $damage")
+
+        for (i in 0..state.value.entities.size - 1) {
+            if (state.value.entities[i] === entity) {
+
+                _state.value = state.value.copy(
+                    entities = state.value.entities.map { it ->
+                        if (it === entity) {
+                            it.abstractCopy(
+                                healthPoints = it.healthPoints - damage
+                            )
+                        } else {
+                            it
+                        }
+                    }
+                )
+
+                break
+            }
+        }
+
+
+//        entity.getDamage(inputDamage = damage)
+
         nextTurn()
     }
 
@@ -150,7 +182,6 @@ object Game {
         }
 
 
-
 //        _entities.value = _entities.value.map { entity ->
 //            when (entity) {
 //                is Player -> entity.copy()
@@ -160,10 +191,13 @@ object Game {
 
         when (currentEntity) {
             is Monster -> onStartTurn(monster = currentEntity as Monster)
-            is Player -> {}
-            null -> {}
+            else -> {}
         }
     }
+
+//    fun onAttack(entity: Entity){
+//
+//    }
 
     fun onStartTurn(monster: Monster) {
 //        val entity = monster.chooseEntityToAttack(entities = entities.value)
