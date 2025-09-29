@@ -24,26 +24,26 @@ fun main() {
     }
 }
 
-fun test() {
-    val entity1 = Monster(
-        healthPoints = 100,
-        defensePoints = 100,
-        attackPoints = 100,
-        minDamagePoints = 5,
-        maxDamagePoints = 20
-    )
-
-    val entity2 = Monster(
-        healthPoints = 100,
-        defensePoints = 100,
-        attackPoints = 100,
-        minDamagePoints = 5,
-        maxDamagePoints = 20
-    )
-
-    println("entity2.healthPoints = ${entity2.healthPoints}")
-    println("entity2.maxHealth = ${entity2.maxHealth}")
-    entity1.tryAttack(entity2)
-    println("entity2.healthPoints = ${entity2.healthPoints}")
-    println("entity2.maxHealth = ${entity2.maxHealth}")
-}
+//fun test() {
+//    val entity1 = Monster(
+//        healthPoints = 100,
+//        defensePoints = 100,
+//        attackPoints = 100,
+//        minDamagePoints = 5,
+//        maxDamagePoints = 20
+//    )
+//
+//    val entity2 = Monster(
+//        healthPoints = 100,
+//        defensePoints = 100,
+//        attackPoints = 100,
+//        minDamagePoints = 5,
+//        maxDamagePoints = 20
+//    )
+//
+//    println("entity2.healthPoints = ${entity2.healthPoints}")
+//    println("entity2.maxHealth = ${entity2.maxHealth}")
+//    entity1.tryAttack(entity2)
+//    println("entity2.healthPoints = ${entity2.healthPoints}")
+//    println("entity2.maxHealth = ${entity2.maxHealth}")
+//}

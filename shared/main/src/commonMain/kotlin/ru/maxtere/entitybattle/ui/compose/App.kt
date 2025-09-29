@@ -10,10 +10,8 @@ fun App() {
 //    val entities by Game.entities.collectAsState()
     val state by Game.state.collectAsState()
     val entities = state.entities
-    println("App")
     LazyColumn {
         items(count = entities.size) { index ->
-            println("EntityItem")
             EntityItem(
                 entity = entities[index],
 //                buttonByEntity = buttonByEntity(entities.value[index]),

@@ -29,7 +29,7 @@ import ru.maxtere.sdk.ui.compose.SpacerWidth
 fun EntityAttributes(entity: Entity) {
     Column {
         with(entity) {
-            println("EntityAttributes")
+//            println("EntityAttributes")
             EntityAttribute(
                 name = "Health Points",
                 value = "${healthPoints}/${maxHealth}"

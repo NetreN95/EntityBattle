@@ -18,17 +18,17 @@ sealed class Entity(
         get() = (healthPoints > 0)
 
     fun tryAttack(entity: Entity): Int {
-        println("if (canAttackWithMod(entity = entity))")
+//        println("if (canAttackWithMod(entity = entity))")
         if (canAttackWithMod(entity = entity)) {
-            println("return attack(entity = entity)")
+//            println("return attack(entity = entity)")
             return attack(entity = entity)
         }
-        println("return 0")
+//        println("return 0")
         return 0
     }
 
     fun canAttack(entity: Entity): Boolean {
-        println("${(entity.isAlive)} && ${(entity !== this)}")
+//        println("${(entity.isAlive)} && ${(entity !== this)}")
         return (entity.isAlive) && (entity !== this)
     }
 
@@ -38,9 +38,9 @@ sealed class Entity(
             endInclusive = maxDamagePoints
         )
 
-        println("damageRange = $damageRange")
+//        println("damageRange = $damageRange")
         val damage = damageRange.random()
-        println("damage = $damage")
+//        println("damage = $damage")
         entity.getDamage(inputDamage = damage)
         return damage
     }
@@ -64,9 +64,9 @@ sealed class Entity(
     }
 
     private fun getDamage(inputDamage: Int) {
-        println("healthPoints = $healthPoints")
+//        println("healthPoints = $healthPoints")
         healthPoints -= inputDamage
-        println("healthPoints = $healthPoints")
+//        println("healthPoints = $healthPoints")
     }
 
     fun abstractCopy(

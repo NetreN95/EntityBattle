@@ -71,9 +71,9 @@ fun EntityMenu(
         return
     }
 
-    println("buttonByEntity.text = ${buttonByEntity.text}")
-    println("buttonByEntity.enabled = ${buttonByEntity.enabled}")
-    println("buttonByEntity.color = ${buttonByEntity.color}")
+//    println("buttonByEntity.text = ${buttonByEntity.text}")
+//    println("buttonByEntity.enabled = ${buttonByEntity.enabled}")
+//    println("buttonByEntity.color = ${buttonByEntity.color}")
 
     Button(
         onClick = buttonByEntity.onclick,

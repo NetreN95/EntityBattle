@@ -101,9 +101,11 @@ object Game {
             endInclusive = entity.maxDamagePoints
         )
 
-        println("damageRange = $damageRange")
+//        println("damageRange = $damageRange")
         val damage = damageRange.random()
-        println("damage = $damage")
+//        println("damage = $damage")
+
+        println("entity.hp = ${entity.healthPoints}")
 
         for (i in 0..state.value.entities.size - 1) {
             if (state.value.entities[i] === entity) {
@@ -124,6 +126,8 @@ object Game {
             }
         }
 
+        println("entity.hp = ${entity.healthPoints}")
+
 
 //        entity.getDamage(inputDamage = damage)
 
@@ -132,6 +136,9 @@ object Game {
 
     fun nextTurn() {
         val newIndex = nextAliveEntityIndex()
+
+        println("newIndex = $newIndex")
+
         if (newIndex == null) {
 //            gameOver(entities)
             return
@@ -140,7 +147,6 @@ object Game {
         _state.value = state.value.copy(
             currentEntityIndex = newIndex
         )
-//        state.value.currentEntityIndex = newIndex
         onStartTurn()
     }
 
@@ -149,8 +155,11 @@ object Game {
             return 0
         }
 
-        val nextIndex = (state.value.currentEntityIndex + 1) % (state.value.entities.size - 1)
-        val maxIndex = state.value.entities.size + state.value.currentEntityIndex - 2
+        val nextIndex = (state.value.currentEntityIndex + 1) % (state.value.entities.size)
+        val maxIndex = state.value.entities.size + state.value.currentEntityIndex - 1
+
+        println("nextIndex = $nextIndex")
+        println("maxIndex = $maxIndex")
 
         for (i in (nextIndex)..maxIndex) {
             with(state.value.entities[i]) {
@@ -173,13 +182,13 @@ object Game {
 
 
 
-        _state.value = state.value.copy(
-            entities = state.value.entities
-        )
+//        _state.value = state.value.copy(
+//            entities = state.value.entities
+//        )
 
-        state.value.entities.forEach {
-            println("hp = ${it.healthPoints}")
-        }
+//        state.value.entities.forEach {
+//            println("hp = ${it.healthPoints}")
+//        }
 
 
 //        _entities.value = _entities.value.map { entity ->
@@ -189,9 +198,16 @@ object Game {
 //            }
 //        }
 
+        println("currentEntity = ${currentEntity}")
+
         when (currentEntity) {
-            is Monster -> onStartTurn(monster = currentEntity as Monster)
-            else -> {}
+            is Monster -> {
+                println("is Monster")
+                onStartTurn(monster = currentEntity as Monster)
+            }
+            else -> {
+                println("is Player")
+            }
         }
     }
 
@@ -203,7 +219,9 @@ object Game {
 //        val entity = monster.chooseEntityToAttack(entities = entities.value)
         val entity = monster.chooseEntityToAttack(entities = state.value.entities)
         if (entity != null) {
-            monster.tryAttack(entity = entity)
+//            monster.tryAttack(entity = entity)
+            println("onAttack(entity)")
+            onAttack(entity)
             nextTurn()
         } else {
 //            gameOver(entities)
@@ -213,12 +231,12 @@ object Game {
     fun currentButton(
         entity: Entity
     ): ButtonByEntity? {
-        println("currentButton: currentEntity = $currentEntity")
+//        println("currentButton: currentEntity = $currentEntity")
         when (currentEntity) {
             is Player -> {
 
                 return if (currentEntity == entity) {
-                    println("(currentEntity as Player).canHealSelf = ${(currentEntity as Player).maxHeal > 0}")
+//                    println("(currentEntity as Player).canHealSelf = ${(currentEntity as Player).maxHeal > 0}")
 
                     ButtonByEntity(
                         onclick = this::onHealSelf,
