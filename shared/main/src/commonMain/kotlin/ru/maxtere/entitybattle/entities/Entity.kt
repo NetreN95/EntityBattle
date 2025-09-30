@@ -95,7 +95,7 @@ sealed class Entity(
         private val _percentOfHeal = 30
         private var _countOfHeals = 4
 
-        val maxHeal = maxHeal()
+        val maxHeal get() = maxHeal()
 
         fun healSelf(): Int {
             if (maxHeal <= 0) {
@@ -103,6 +103,7 @@ sealed class Entity(
             }
 
             changeHealth(maxHeal)
+            _countOfHeals -= 1
             return maxHeal
         }
 

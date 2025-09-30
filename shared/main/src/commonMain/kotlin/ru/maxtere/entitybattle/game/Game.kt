@@ -74,9 +74,6 @@ object Game {
         val nextIndex = (state.value.currentEntityIndex + 1) % (state.value.entities.size)
         val maxIndex = state.value.entities.size + state.value.currentEntityIndex - 1
 
-        println("nextIndex = $nextIndex")
-        println("maxIndex = $maxIndex")
-
         for (i in (nextIndex)..maxIndex) {
             with(state.value.entities[i % state.value.entities.size]) {
                 if (attributes.value.isAlive) {
@@ -129,7 +126,8 @@ object Game {
                         ButtonByEntity(
                             onclick = this::onHealSelf,
                             text = "Лечить",
-                            enabled = ((currentEntity as Player).maxHeal > 0),
+//                            enabled = ((currentEntity as Player).maxHeal > 0),
+                            enabled = true,
                             color = Color.Green
                         )
                     )
