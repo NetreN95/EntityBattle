@@ -1,4 +1,4 @@
-[Battle Entity]
+#Battle Entity
 
 Небольшая игра в рамках тестового задания.
 
