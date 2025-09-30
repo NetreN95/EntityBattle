@@ -1,4 +1,4 @@
-package ru.maxtere.entitybattle.entities.entity
+package ru.maxtere.entitybattle.entities
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

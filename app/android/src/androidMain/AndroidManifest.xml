@@ -3,8 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:name="ru.maxtere.sdk.platform.android.App"
-        android:label="SampleApp"
+        android:label="Entity Battle"
         android:theme="@style/AppTheme">
         <activity
 

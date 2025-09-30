@@ -68,6 +68,6 @@ fun includeMain() {
 }
 
 fun includeApp() {
-//    include(":app:android")
+    include(":app:android")
     include(":app:desktop")
 }

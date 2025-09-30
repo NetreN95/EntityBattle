@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import ru.maxtere.entitybattle.entities.entity.Entity
-import ru.maxtere.entitybattle.entities.entity.Entity.Monster
-import ru.maxtere.entitybattle.entities.entity.Entity.Player
+import ru.maxtere.entitybattle.entities.Entity
+import ru.maxtere.entitybattle.entities.Entity.Monster
+import ru.maxtere.entitybattle.entities.Entity.Player
 import ru.maxtere.entitybattle.ui.compose.ButtonByEntity
 
 object Game {
@@ -118,41 +118,12 @@ object Game {
         }
     }
 
-//    fun currentButton(
-//        entity: Entity
-//    ): ButtonByEntity? {
-//        when (currentEntity) {
-//            is Player -> {
-//                return if (currentEntity == entity) {
-//                    println("(currentEntity as Player).maxHeal = ${(currentEntity as Player).maxHeal}")
-//                    ButtonByEntity(
-//                        onclick = this::onHealSelf,
-//                        text = "Лечить",
-//                        enabled = ((currentEntity as Player).maxHeal > 0),
-//                        color = Color.Green
-//                    )
-//                } else {
-//                    ButtonByEntity(
-//                        onclick = { this.onAttack(entity = entity) },
-//                        text = "Атаковать",
-//                        enabled = (currentEntity?.canAttack(entity = entity) == true),
-//                        color = Color.Red
-//                    )
-//                }
-//            }
-//
-//            else -> {}
-//        }
-//        return null
-//    }
-
     fun currentButtons(
         entity: Entity
     ): List<ButtonByEntity> {
         val list: ArrayList<ButtonByEntity> = ArrayList()
         when (currentEntity) {
             is Player -> {
-//                return
                 if (currentEntity == entity) {
                     list.add(
                         ButtonByEntity(
@@ -170,16 +141,6 @@ object Game {
                             color = Color.Blue
                         )
                     )
-//                    println("(currentEntity as Player).maxHeal = ${(currentEntity as Player).maxHeal}")
-//
-//
-//
-//                    ButtonByEntity(
-//                        onclick = this::onHealSelf,
-//                        text = "Лечить",
-//                        enabled = ((currentEntity as Player).maxHeal > 0),
-//                        color = Color.Green
-//                    )
                 } else {
                     list.add(
                         ButtonByEntity(
@@ -189,13 +150,6 @@ object Game {
                             color = Color.Red
                         )
                     )
-
-//                    ButtonByEntity(
-//                        onclick = { this.onAttack(entity = entity) },
-//                        text = "Атаковать",
-//                        enabled = (currentEntity?.canAttack(entity = entity) == true),
-//                        color = Color.Red
-//                    )
                 }
             }
 

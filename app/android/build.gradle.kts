@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    namespace = "ru.maxtere.sample.app.android"
+    namespace = "ru.maxtere.entitybattle.app.android"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
 
     defaultConfig {
-        applicationId = "ru.maxtere.sample"
+        applicationId = "ru.maxtere.entitybattle"
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -35,12 +35,8 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
+                implementation(projects.shared.main)
                 implementation(projects.sdk.platform)
-//                api(projects.sdk.ui.compose)
-                implementation(projects.common.main)
-//                implementation(projects.sdk.database.sqlDelight)
-
-//                implementation(projects.common.experiments)
                 implementation(projects.sdk.ui.compose)
             }
         }
