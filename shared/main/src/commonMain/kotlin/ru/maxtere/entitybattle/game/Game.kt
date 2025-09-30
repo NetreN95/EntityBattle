@@ -4,82 +4,29 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import ru.maxtere.entitybattle.entities.entity.Entity
 import ru.maxtere.entitybattle.entities.entity.Entity.Monster
 import ru.maxtere.entitybattle.entities.entity.Entity.Player
-import ru.maxtere.entitybattle.ui.compose.views.ButtonByEntity
-
-//
-//
-//class Game {
-//
-//
-//    fun menu() {
-//        updateState {
-//            GameState.GameMenu(
-//                startGame = ::startGame
-//            )
-//        }
-//    }
-//
-//    fun startGame() {
-//        updateState {
-//            GameState.newGame(
-//                gameOver = ::gameOver,
-//                update = ::update
-//            )
-//        }
-//    }
-//
-//    fun gameOver(entities: List<Entity>) {
-//        updateState {
-//            GameState.GameOver(
-//                entities = entities
-//            )
-//        }
-//    }
-//
-//    private fun update() {
-//        updateState {
-//            state.value
-//        }
-//    }
-//
-//    private fun updateState(block: GameState.() -> GameState) {
-//        _state.value = block(_state.value)
-//    }
-//}
+import ru.maxtere.entitybattle.ui.compose.ButtonByEntity
 
 object Game {
-
     private val _state = MutableStateFlow(
         State(
             listOf(
-                Player(),
-                Monster()
+                Player(attributes = Entity.EntityAttributes.DEFAULT),
+                Monster(attributes = Entity.EntityAttributes.DEFAULT),
+                Monster(attributes = Entity.EntityAttributes.DEFAULT),
+                Monster(attributes = Entity.EntityAttributes.DEFAULT)
             )
         )
     )
 
     val state: StateFlow<State> = _state.asStateFlow()
+    val aliveEntities get() = state.value.entities.filter { entity -> entity.attributes.value.isAlive }
 
-//    private var _currentEntityIndex: Int = 0
-//
-//    private val _entities: MutableStateFlow<List<Entity>> = MutableStateFlow(
-//        listOf(
-//            Player(),
-//            Monster()
-//        )
-//    )
-//    val entities: StateFlow<List<Entity>> = _entities.asStateFlow()
-
-
-    //    val aliveEntities get() = entities.value.filter { entity -> entity.isAlive }
-    val aliveEntities get() = state.value.entities.filter { entity -> entity.isAlive }
-
-    val currentEntity
+    val currentEntity: Entity?
         get() = if (state.value.entities.size >= state.value.currentEntityIndex + 1) {
-//            entities.value[_currentEntityIndex]
             state.value.entities[state.value.currentEntityIndex]
         } else if (state.value.entities.isEmpty()) {
             null
@@ -94,59 +41,28 @@ object Game {
     }
 
     fun onAttack(entity: Entity) {
-//        currentEntity?.tryAttack(entity = entity)
+        currentEntity?.tryAttack(entity = entity)
 
-        val damageRange = IntRange(
-            start = entity.minDamagePoints,
-            endInclusive = entity.maxDamagePoints
-        )
-
-//        println("damageRange = $damageRange")
-        val damage = damageRange.random()
-//        println("damage = $damage")
-
-        println("entity.hp = ${entity.healthPoints}")
-
-        for (i in 0..state.value.entities.size - 1) {
-            if (state.value.entities[i] === entity) {
-
-                _state.value = state.value.copy(
-                    entities = state.value.entities.map { it ->
-                        if (it === entity) {
-                            it.abstractCopy(
-                                healthPoints = it.healthPoints - damage
-                            )
-                        } else {
-                            it
-                        }
-                    }
-                )
-
-                break
-            }
+        _state.update {
+            it.copy(canAttack = false)
         }
-
-        println("entity.hp = ${entity.healthPoints}")
-
-
-//        entity.getDamage(inputDamage = damage)
-
-        nextTurn()
     }
 
     fun nextTurn() {
         val newIndex = nextAliveEntityIndex()
-
-        println("newIndex = $newIndex")
 
         if (newIndex == null) {
 //            gameOver(entities)
             return
         }
 
-        _state.value = state.value.copy(
-            currentEntityIndex = newIndex
-        )
+        _state.update {
+            it.copy(
+                currentEntityIndex = newIndex,
+                canAttack = true
+            )
+        }
+
         onStartTurn()
     }
 
@@ -162,8 +78,8 @@ object Game {
         println("maxIndex = $maxIndex")
 
         for (i in (nextIndex)..maxIndex) {
-            with(state.value.entities[i]) {
-                if (isAlive) {
+            with(state.value.entities[i % state.value.entities.size]) {
+                if (attributes.value.isAlive) {
                     return i
                 }
             }
@@ -180,47 +96,21 @@ object Game {
             return
         }
 
-
-
-//        _state.value = state.value.copy(
-//            entities = state.value.entities
-//        )
-
-//        state.value.entities.forEach {
-//            println("hp = ${it.healthPoints}")
-//        }
-
-
-//        _entities.value = _entities.value.map { entity ->
-//            when (entity) {
-//                is Player -> entity.copy()
-//                is Monster -> entity.copy()
-//            }
-//        }
-
-        println("currentEntity = ${currentEntity}")
-
         when (currentEntity) {
             is Monster -> {
-                println("is Monster")
                 onStartTurn(monster = currentEntity as Monster)
+                return
             }
+
             else -> {
-                println("is Player")
+                return
             }
         }
     }
 
-//    fun onAttack(entity: Entity){
-//
-//    }
-
     fun onStartTurn(monster: Monster) {
-//        val entity = monster.chooseEntityToAttack(entities = entities.value)
         val entity = monster.chooseEntityToAttack(entities = state.value.entities)
         if (entity != null) {
-//            monster.tryAttack(entity = entity)
-            println("onAttack(entity)")
             onAttack(entity)
             nextTurn()
         } else {
@@ -228,40 +118,95 @@ object Game {
         }
     }
 
-    fun currentButton(
+//    fun currentButton(
+//        entity: Entity
+//    ): ButtonByEntity? {
+//        when (currentEntity) {
+//            is Player -> {
+//                return if (currentEntity == entity) {
+//                    println("(currentEntity as Player).maxHeal = ${(currentEntity as Player).maxHeal}")
+//                    ButtonByEntity(
+//                        onclick = this::onHealSelf,
+//                        text = "Лечить",
+//                        enabled = ((currentEntity as Player).maxHeal > 0),
+//                        color = Color.Green
+//                    )
+//                } else {
+//                    ButtonByEntity(
+//                        onclick = { this.onAttack(entity = entity) },
+//                        text = "Атаковать",
+//                        enabled = (currentEntity?.canAttack(entity = entity) == true),
+//                        color = Color.Red
+//                    )
+//                }
+//            }
+//
+//            else -> {}
+//        }
+//        return null
+//    }
+
+    fun currentButtons(
         entity: Entity
-    ): ButtonByEntity? {
-//        println("currentButton: currentEntity = $currentEntity")
+    ): List<ButtonByEntity> {
+        val list: ArrayList<ButtonByEntity> = ArrayList()
         when (currentEntity) {
             is Player -> {
-
-                return if (currentEntity == entity) {
-//                    println("(currentEntity as Player).canHealSelf = ${(currentEntity as Player).maxHeal > 0}")
-
-                    ButtonByEntity(
-                        onclick = this::onHealSelf,
-                        text = "Лечить",
-                        enabled = (currentEntity as Player).maxHeal > 0,
-                        color = Color.Green
+//                return
+                if (currentEntity == entity) {
+                    list.add(
+                        ButtonByEntity(
+                            onclick = this::onHealSelf,
+                            text = "Лечить",
+                            enabled = ((currentEntity as Player).maxHeal > 0),
+                            color = Color.Green
+                        )
                     )
+                    list.add(
+                        ButtonByEntity(
+                            onclick = this::nextTurn,
+                            text = "Конец хода",
+                            enabled = true,
+                            color = Color.Blue
+                        )
+                    )
+//                    println("(currentEntity as Player).maxHeal = ${(currentEntity as Player).maxHeal}")
+//
+//
+//
+//                    ButtonByEntity(
+//                        onclick = this::onHealSelf,
+//                        text = "Лечить",
+//                        enabled = ((currentEntity as Player).maxHeal > 0),
+//                        color = Color.Green
+//                    )
                 } else {
-                    ButtonByEntity(
-                        onclick = { this.onAttack(entity = entity) },
-                        text = "Атаковать",
-                        enabled = currentEntity?.canAttack(entity = entity) == true,
-                        color = Color.Red
+                    list.add(
+                        ButtonByEntity(
+                            onclick = { this.onAttack(entity = entity) },
+                            text = "Атаковать",
+                            enabled = (state.value.canAttack) && (currentEntity?.canAttack(entity = entity) == true),
+                            color = Color.Red
+                        )
                     )
+
+//                    ButtonByEntity(
+//                        onclick = { this.onAttack(entity = entity) },
+//                        text = "Атаковать",
+//                        enabled = (currentEntity?.canAttack(entity = entity) == true),
+//                        color = Color.Red
+//                    )
                 }
             }
 
-            is Monster -> {}
-            null -> {}
+            else -> {}
         }
-        return null
+        return list
     }
 
     data class State(
         val entities: List<Entity>,
-        val currentEntityIndex: Int = 0
+        val currentEntityIndex: Int = 0,
+        val canAttack: Boolean = true
     )
 }

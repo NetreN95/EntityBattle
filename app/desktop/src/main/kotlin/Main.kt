@@ -3,7 +3,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import ru.maxtere.entitybattle.entities.entity.Entity.Monster
 
 fun main() {
 //    test()
@@ -41,9 +40,5 @@ fun main() {
 //        maxDamagePoints = 20
 //    )
 //
-//    println("entity2.healthPoints = ${entity2.healthPoints}")
-//    println("entity2.maxHealth = ${entity2.maxHealth}")
 //    entity1.tryAttack(entity2)
-//    println("entity2.healthPoints = ${entity2.healthPoints}")
-//    println("entity2.maxHealth = ${entity2.maxHealth}")
 //}

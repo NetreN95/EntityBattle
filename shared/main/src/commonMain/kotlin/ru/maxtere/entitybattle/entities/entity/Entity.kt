@@ -1,46 +1,58 @@
 package ru.maxtere.entitybattle.entities.entity
 
-import kotlinx.serialization.Serializable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-@Serializable
 sealed class Entity(
-    open var healthPoints: Int,
-    open val defensePoints: Int,
-    open val attackPoints: Int,
-    open val minDamagePoints: Int,
-    open val maxDamagePoints: Int,
-    open val maxHealth: Int = healthPoints
+    attributes: EntityAttributes = EntityAttributes.DEFAULT
 ) {
-    val isAlive
-        get() = (healthPoints > 0)
+    data class EntityAttributes(
+        val healthPoints: Int,
+        val defensePoints: Int,
+        val attackPoints: Int,
+        val minDamagePoints: Int,
+        val maxDamagePoints: Int,
+        val maxHealth: Int = healthPoints
+    ) {
+        val isAlive = (healthPoints > 0)
+
+        companion object {
+            val DEFAULT
+                get() = EntityAttributes(
+                    healthPoints = 100,
+                    defensePoints = 30,
+                    attackPoints = 30,
+                    minDamagePoints = 1,
+                    maxDamagePoints = 20
+                )
+        }
+    }
+
+    private val _attributes = MutableStateFlow(attributes)
+    val attributes = _attributes.asStateFlow()
 
     fun tryAttack(entity: Entity): Int {
-//        println("if (canAttackWithMod(entity = entity))")
         if (canAttackWithMod(entity = entity)) {
-//            println("return attack(entity = entity)")
             return attack(entity = entity)
         }
-//        println("return 0")
         return 0
     }
 
     fun canAttack(entity: Entity): Boolean {
-//        println("${(entity.isAlive)} && ${(entity !== this)}")
-        return (entity.isAlive) && (entity !== this)
+        return (attributes.value.isAlive) && (entity.attributes.value.isAlive) && (entity !== this)
     }
 
     private fun attack(entity: Entity): Int {
         val damageRange = IntRange(
-            start = minDamagePoints,
-            endInclusive = maxDamagePoints
+            start = attributes.value.minDamagePoints,
+            endInclusive = attributes.value.maxDamagePoints
         )
 
-//        println("damageRange = $damageRange")
         val damage = damageRange.random()
-//        println("damage = $damage")
         entity.getDamage(inputDamage = damage)
         return damage
     }
@@ -50,10 +62,10 @@ sealed class Entity(
             return false
         }
 
-        val modAttack = attackPoints - entity.defensePoints + 1
+        val modAttack = attributes.value.attackPoints - entity.attributes.value.defensePoints + 1
         val countRolls = max(modAttack, 1)
 
-        for (i in 1..countRolls) {
+        (1..countRolls).forEach { i ->
             val resOfRoll = IntRange(1, 6).random()
 
             if (resOfRoll in 5..6) {
@@ -64,98 +76,54 @@ sealed class Entity(
     }
 
     private fun getDamage(inputDamage: Int) {
-//        println("healthPoints = $healthPoints")
-        healthPoints -= inputDamage
-//        println("healthPoints = $healthPoints")
+        changeHealth(-inputDamage)
     }
 
-    fun abstractCopy(
-        healthPoints: Int = this.healthPoints,
-        defensePoints: Int = this.defensePoints,
-        attackPoints: Int = this.attackPoints,
-        minDamagePoints: Int = this.minDamagePoints,
-        maxDamagePoints: Int = this.maxDamagePoints,
-    ): Entity {
-
-        when (this) {
-            is Player -> {
-                return this.copy(
-                    healthPoints = healthPoints,
-                    defensePoints = defensePoints,
-                    attackPoints = attackPoints,
-                    minDamagePoints = minDamagePoints,
-                    maxDamagePoints = maxDamagePoints
-                )
-            }
-
-            is Monster -> {
-                return this.copy(
-                    healthPoints = healthPoints,
-                    defensePoints = defensePoints,
-                    attackPoints = attackPoints,
-                    minDamagePoints = minDamagePoints,
-                    maxDamagePoints = maxDamagePoints
-                )
-            }
+    protected fun changeHealth(healthIncrement: Int) {
+        _attributes.update {
+            it.copy(
+                healthPoints = attributes.value.healthPoints + healthIncrement
+            )
         }
-
-
     }
 
-    data class Player(
-        override var healthPoints: Int = 100,
-        override val defensePoints: Int = 30,
-        override val attackPoints: Int = 30,
-        override val minDamagePoints: Int = 1,
-        override val maxDamagePoints: Int = 20,
-        override val maxHealth: Int = healthPoints
+    class Player(
+        attributes: EntityAttributes = EntityAttributes.DEFAULT
     ) : Entity(
-        healthPoints = healthPoints,
-        defensePoints = defensePoints,
-        attackPoints = attackPoints,
-        minDamagePoints = minDamagePoints,
-        maxDamagePoints = maxDamagePoints,
+        attributes = attributes
     ) {
         private val _percentOfHeal = 30
         private var _countOfHeals = 4
 
-        val maxHeal get() = maxHeal()
+        val maxHeal = maxHeal()
 
         fun healSelf(): Int {
             if (maxHeal <= 0) {
                 return 0
             }
-            healthPoints += maxHeal
+
+            changeHealth(maxHeal)
             return maxHeal
         }
 
         private fun maxHeal(): Int {
             if (_countOfHeals <= 0) return 0
-            if (healthPoints >= maxHealth) return 0
+            if (attributes.value.healthPoints >= attributes.value.maxHealth) return 0
 
             return min(
-                maxHealth - healthPoints,
-                (maxHealth * _percentOfHeal.toDouble() / 100).roundToInt()
+                attributes.value.maxHealth - attributes.value.healthPoints,
+                (attributes.value.maxHealth * _percentOfHeal.toDouble() / 100).roundToInt()
             )
         }
     }
 
-    data class Monster(
-        override var healthPoints: Int = 100,
-        override val defensePoints: Int = 30,
-        override val attackPoints: Int = 30,
-        override val minDamagePoints: Int = 1,
-        override val maxDamagePoints: Int = 20,
-        override val maxHealth: Int = healthPoints
+    class Monster(
+        attributes: EntityAttributes = EntityAttributes.DEFAULT
     ) : Entity(
-        healthPoints = healthPoints,
-        defensePoints = defensePoints,
-        attackPoints = attackPoints,
-        minDamagePoints = minDamagePoints,
-        maxDamagePoints = maxDamagePoints,
+        attributes = attributes
     ) {
         fun chooseEntityToAttack(entities: List<Entity>): Entity? {
-            if (!isAlive) {
+            if (!attributes.value.isAlive) {
                 return null
             }
             val list = entities.filter { entity ->

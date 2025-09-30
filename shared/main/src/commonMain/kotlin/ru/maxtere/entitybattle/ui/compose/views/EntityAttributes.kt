@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import ru.maxtere.entitybattle.entities.entity.Entity
 import ru.maxtere.sdk.ui.compose.SpacerWidth
 
@@ -27,9 +29,11 @@ import ru.maxtere.sdk.ui.compose.SpacerWidth
 
 @Composable
 fun EntityAttributes(entity: Entity) {
+
+    val attributes by entity.attributes.collectAsState()
+
     Column {
-        with(entity) {
-//            println("EntityAttributes")
+        with(attributes) {
             EntityAttribute(
                 name = "Health Points",
                 value = "${healthPoints}/${maxHealth}"
